@@ -2,7 +2,9 @@ package assignment4;
 
 import java.io.*;
 
+
 import javax.swing.JFrame;
+
 import studio4.PrintStreamPanel;
 
 public class ViewInputStream extends FilterInputStream {
@@ -24,7 +26,15 @@ public class ViewInputStream extends FilterInputStream {
         // TODO
         // use super.read() to access the next byte from the InputStream
         // also, you can use ps like System.out to print to the new window
-
+    	try {
+			int x = super.read();
+			String hex = Integer.toHexString(x);
+			PrintStreamPanel.PrintStream(in);
+			return x;
+		} catch (IOException e) {
+			// FIXME Auto-generated catch block
+			e.printStackTrace();
+		}
     }
     
 }
