@@ -1,6 +1,7 @@
 package assignment4;
 
 import studio4.SerialComm;
+
 import java.io.*;
 
 public class MsgReceiver {
@@ -12,6 +13,18 @@ public class MsgReceiver {
 	}
 	
 	public void run() {
+		 try {   
+	         while(true){
+	        	 if (vis.available() > 1){
+	        		 System.out.println(vis.read());
+	        	 }
+	         }
+		 }
+		 catch ( Exception e )
+	        {
+	            // TODO Auto-generated catch block
+	            e.printStackTrace();
+	        }
 		// insert code here
 		// read from vis and write to console
 		
@@ -23,7 +36,7 @@ public class MsgReceiver {
         try
         {        	
             SerialComm s = new SerialComm();
-            s.connect("COM4"); // Adjust this to be the right port for your machine
+            s.connect("/dev/cu.usbserial-DN00MZW8"); // Adjust this to be the right port for your machine
             InputStream in = s.getInputStream();
             MsgReceiver msgr = new MsgReceiver(in);
             msgr.run();
