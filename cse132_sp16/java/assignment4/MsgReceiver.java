@@ -24,12 +24,12 @@ public class MsgReceiver {
 			
 			while (true) {
 				
-					//State nextState = null;
+					State nextState = null;
 					
 					switch (state) {
 					case waitingForMagicNumber:
 						if (vis.read() == 33) {
-							state = State.waitingForInputType;
+							nextState = State.waitingForInputType;
 						} //else {
 							//state = State.waitingForMagicNumber;
 						//}
@@ -41,28 +41,28 @@ public class MsgReceiver {
 						case 48:
 							System.out.println("input");
 							type = "Debugging String";
-							state = State.readingDebugString;
+							nextState = State.readingDebugString;
 						case 49:
 							type = "Error String";
-							state = State.readingErrorString;
+							nextState = State.readingErrorString;
 						case 50:
 							type = "Timestamp";
-							state = State.readingTimestamp;
+							nextState = State.readingTimestamp;
 						case 51:
 							type = "Poten";
-							state = State.readingPoten;
+							nextState = State.readingPoten;
 						case  52:
 							type = "Raw Temp";
-							state = State.readingRawTemp;
+							nextState = State.readingRawTemp;
 						case 53:
 							type = "Convert Temp";
-							state = State.readingConvertTemp;
+							nextState = State.readingConvertTemp;
 						case 54:
 							type = "Filtered Temp";
-							state = State.readingFilteredTemp;
+							nextState = State.readingFilteredTemp;
 						default:
 							//type = "Potentiometer Bad!";
-							state = State.waitingForMagicNumber;
+							nextState = State.waitingForMagicNumber;
 							break;
 						}
 						System.out.println("Input type: "+type);
@@ -79,7 +79,7 @@ public class MsgReceiver {
 						}
 						//DataInputStream dis = new DataInputStream(vis);
 						//String receivedString = dis.readUTF();
-						state = State.waitingForInputType;
+						nextState = State.waitingForInputType;
 						System.out.println("Debug String: "+receivedString);
 						break;
 					case readingErrorString:
@@ -93,7 +93,7 @@ public class MsgReceiver {
 						}
 						//DataInputStream dis1 = new DataInputStream(vis);
 						//String receivedString2 = dis1.readUTF();
-						state = State.waitingForInputType;
+						nextState = State.waitingForInputType;
 						System.out.println("Error String: "+ erString);
 						break;
 					case readingTimestamp:
@@ -108,7 +108,7 @@ public class MsgReceiver {
 						//DataInputStream dis2 = new DataInputStream(vis);
 						//int receivedInt1 = dis2.readInt();
 						//String timestamp = Integer.toString(receivedInt1);
-						state = State.waitingForMagicNumber;
+						nextState = State.waitingForMagicNumber;
 						System.out.println("Timestamp: " + totalT + "milliseconds");
 						break;
 					case readingPoten:
@@ -119,7 +119,7 @@ public class MsgReceiver {
 						//DataInputStream dis3 = new DataInputStream(vis);
 						//int receivedInt2 = dis3.readInt();
 						//String poten = Integer.toString(receivedInt2);
-						state = State.waitingForMagicNumber;
+						nextState = State.waitingForMagicNumber;
 						System.out.println("Potentiometer: " + totalPoten);
 						break;
 					case readingRawTemp:
@@ -131,7 +131,7 @@ public class MsgReceiver {
 						//int receivedInt3 = dis4.readInt();
 						//String temp = Integer.toString(receivedInt3);
 						System.out.println("Raw Temp: " + temp);
-						state = State.waitingForMagicNumber;
+						nextState = State.waitingForMagicNumber;
 						break;
 					case readingConvertTemp:
 						int convertT3 = vis.read();
@@ -146,29 +146,30 @@ public class MsgReceiver {
 						//int receivedInt4 = dis5.readInt();
 						//String convertTemp = Integer.toString(receivedInt4);
 						System.out.println("Converted Temp: " + convertTemp);
-						state = State.waitingForMagicNumber;
+						nextState = State.waitingForMagicNumber;
 						break;
 					case readingFilteredTemp:
-						int filteredT3 = vis.readInt();
-						int filteredT2 = vis.readInt();
+						int filteredT3 = vis.read();
+						int filteredT2 = vis.read();
 						int filteredT1 = vis.read();
 						int filteredT = vis.read();
 						filteredT3 = filteredT3 << 24;
 						filteredT2 = filteredT2 << 16;
-						filteredT1 = filteredT1 << 8;
+						filteredT1 = filteredT1 * 256;
 						int filterTemp = filteredT3 + filteredT2 + filteredT1 + filteredT;
 						//DataInputStream dis6 = new DataInputStream(vis);
 						//int receivedInt5 = dis6.readInt();
 						//String filterTemp = Integer.toString(receivedInt5);
 						System.out.println("Filtered Temp: " + filterTemp);
-						state = State.waitingForMagicNumber;
+						nextState = State.waitingForMagicNumber;
 						break;
 					default:
-						state = State.waitingForMagicNumber;
+						nextState = State.waitingForMagicNumber;
 						System.out.println("error");
 						break;
 						
 					}
+					state = nextState;
 				}
 				
 			}
